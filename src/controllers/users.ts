@@ -126,8 +126,6 @@ const updateUserStatuses: RequestHandler = async function (req, res, next) {
       // create a map of all statuses according to the request.
       const userStatuses = new Map<string, Array<number | string>>();
       const users = req.body.user_statuses || [];
-      console.log("users", users);
-      console.log("allStatuses", allStatuses);
       for (const u of users) {
         if (allStatuses.includes(u.status)) {
           const current = userStatuses.get(u.status) || [];
@@ -137,7 +135,6 @@ const updateUserStatuses: RequestHandler = async function (req, res, next) {
           userStatuses.set(u.status, current);
         }
       }
-      console.log("userStatuses", userStatuses);
 
       // now run update queries for all keys in [userStatuses].
       const keys = Array.from(userStatuses.keys());
@@ -296,7 +293,7 @@ const removeUserFromGroup: RequestHandler = async function (req, res, next) {
       })
 
       // if there aren't any records, set group to empty.
-      if (_userGroups.count === 0) {
+      if (_userGroups.count <= 1) {
         // if the group status is 'notEmpty', update it.
         let groupJson = group.toJSON();
         if (groupJson.status === 'notEmpty') {
