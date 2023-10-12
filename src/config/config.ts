@@ -4,7 +4,7 @@ const devParams = {
   database_username: 'phpmyadmin',
   database_password: 'phpmyadmin',
   database_host: 'localhost',
-  database_dialect: 'mysql',
+  database_dialect: 'mariadb',
   defaultPaginationLimit: 20
 }
 

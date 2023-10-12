@@ -11,7 +11,7 @@ class UserGroupModel extends Model {
 
 UserGroupModel.init({
   user_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BIGINT,
     references: {
       model: UserModel,
       key: 'id',
@@ -19,7 +19,7 @@ UserGroupModel.init({
     primaryKey: true
   },
   group_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BIGINT,
     references: {
       model: Group,
       key: 'id',

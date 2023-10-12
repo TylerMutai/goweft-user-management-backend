@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "tsc": " tsc",
-    "dev": " ts-node-dev --respawn --transpileOnly ./src/index.ts"
+    "start": "tsc && node --experimental-specifier-resolution=node ./dist"
   },
   "keywords": [],
   "author": "",

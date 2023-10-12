@@ -3,13 +3,13 @@
 Open terminal and run the following commands:
 
 ```bash
-make migrations
+npm i
+npm start 
 ```
 
-```bash 
-make seeders
-```
+or
 
 ```bash 
+npm i
 make server
 ```

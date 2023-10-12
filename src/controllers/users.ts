@@ -13,7 +13,7 @@ const getAll: RequestHandler = async function (req, res, next) {
   try {
     const name: string = req.body.name;
     const email: string | Array<string> | { [key: string]: string } = req.body.email;
-    let emails = [];
+    let emails:Array<string> = [];
     if (typeof email === 'string') {
       emails = [email];
     } else if (Array.isArray(email)) {
