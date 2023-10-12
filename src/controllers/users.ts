@@ -16,13 +16,11 @@ const getAll: RequestHandler = async function (req, res, next) {
     const email = req.query.email;
     let emails: Array<string> = [];
     if (email) {
-      emails = `${email}`?.split('+');
+      emails = `${email}`?.split(' ');
       if (email.length === 0) {
         return res.status(400).json(jsonMessageResponse('[email] key must be seperated with "+"'))
       }
     }
-
-    console.log(emails);
 
     let whereOptions: { [key: string]: any } = {}
     if (name) {
@@ -128,15 +126,18 @@ const updateUserStatuses: RequestHandler = async function (req, res, next) {
       // create a map of all statuses according to the request.
       const userStatuses = new Map<string, Array<number | string>>();
       const users = req.body.user_statuses || [];
+      console.log("users", users);
+      console.log("allStatuses", allStatuses);
       for (const u of users) {
         if (allStatuses.includes(u.status)) {
           const current = userStatuses.get(u.status) || [];
-          if (u.id) {
-            current.push(u.id)
+          if (u.user_id) {
+            current.push(u.user_id)
           }
           userStatuses.set(u.status, current);
         }
       }
+      console.log("userStatuses", userStatuses);
 
       // now run update queries for all keys in [userStatuses].
       const keys = Array.from(userStatuses.keys());
@@ -178,9 +179,7 @@ const updateUserGroup: RequestHandler = async function (req, res, next) {
     await sequelize.transaction(async (t) => {
       let userGroup = UserGroup.findOne({
         where: {
-          user_id: {
-            [Op.is]: userId
-          }
+          user_id: userId
         }
       });
       if (!userGroup) {
@@ -190,9 +189,7 @@ const updateUserGroup: RequestHandler = async function (req, res, next) {
           group_id: groupId
         }, {
           where: {
-            user_id: {
-              [Op.is]: userId
-            }
+            user_id: userId
           },
           transaction: t
         })
@@ -205,9 +202,7 @@ const updateUserGroup: RequestHandler = async function (req, res, next) {
           status: 'notEmpty'
         }, {
           where: {
-            id: {
-              [Op.is]: groupId
-            }
+            id: groupId
           },
           transaction: t
         })
@@ -234,9 +229,7 @@ const addUserToGroup: RequestHandler = async function (req, res, next) {
 
       let _userGroup = await UserGroup.findOne({
         where: {
-          user_id: {
-            [Op.is]: userId
-          }
+          user_id: userId
         }
       });
       if (_userGroup) {
@@ -257,9 +250,7 @@ const addUserToGroup: RequestHandler = async function (req, res, next) {
           status: 'notEmpty'
         }, {
           where: {
-            id: {
-              [Op.is]: groupId
-            }
+            id: groupId
           },
           transaction: t
         })
@@ -285,17 +276,13 @@ const removeUserFromGroup: RequestHandler = async function (req, res, next) {
     await sequelize.transaction(async (t) => {
       let userGroup = UserGroup.findOne({
         where: {
-          user_id: {
-            [Op.is]: userId
-          }
+          user_id: userId
         }
       });
       if (userGroup) {
         await UserGroup.destroy({
           where: {
-            user_id: {
-              [Op.is]: userId
-            }
+            user_id: userId
           },
           transaction: t
         })
@@ -304,9 +291,7 @@ const removeUserFromGroup: RequestHandler = async function (req, res, next) {
       // get userGroups for this Group.
       const _userGroups = await UserGroup.findAndCountAll({
         where: {
-          group_id: {
-            [Op.is]: groupId
-          }
+          group_id: groupId
         }
       })
 
@@ -319,9 +304,7 @@ const removeUserFromGroup: RequestHandler = async function (req, res, next) {
             status: 'empty'
           }, {
             where: {
-              id: {
-                [Op.is]: groupId
-              }
+              id: groupId
             },
             transaction: t
           })
