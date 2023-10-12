@@ -17,7 +17,8 @@ UserModel.init({
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   status: {
     type: DataTypes.STRING,

@@ -8,34 +8,36 @@ import sequelize from "../db/sequelize";
 import Group from "../models/group";
 import UserGroup from "../models/userGroup";
 import {isUserAndGroupValid} from "../utils/userGroupUtils";
+import {jsonMessageResponse} from "../utils/jsonMessages";
 
 const getAll: RequestHandler = async function (req, res, next) {
   try {
-    const name: string = req.body.name;
-    const email: string | Array<string> | { [key: string]: string } = req.body.email;
-    let emails:Array<string> = [];
-    if (typeof email === 'string') {
-      emails = [email];
-    } else if (Array.isArray(email)) {
-      emails = email;
-    } else {
-      res.status(400).json(jsonMessageResponse('[email] key must either be a string or an Array'))
+    const name = req.query.name;
+    const email = req.query.email;
+    let emails: Array<string> = [];
+    if (email) {
+      emails = `${email}`?.split('+');
+      if (email.length === 0) {
+        return res.status(400).json(jsonMessageResponse('[email] key must be seperated with "+"'))
+      }
     }
+
+    console.log(emails);
 
     let whereOptions: { [key: string]: any } = {}
     if (name) {
       whereOptions = {
         ...whereOptions,
         name: {
-          [Op.iLike]: name
+          [Op.like]: `%${`${name}`.toLowerCase()}%`
         }
       }
     }
 
-    if (emails) {
+    if (emails.length > 0) {
       whereOptions = {
         ...whereOptions,
-        name: {
+        email: {
           [Op.in]: emails
         }
       }
@@ -50,12 +52,12 @@ const getAll: RequestHandler = async function (req, res, next) {
     let pages = Math.ceil(result.count / limit);
     const offset = limit * (page - 1)
     const users = await UserModel.findAll({
+      where: whereOptions,
       order: [
         ['id', 'ASC'],
       ],
       limit: limit,
       offset: offset,
-      where: whereOptions
     })
 
     res.status(200).json({'result': users, 'count': result.count, 'pages': pages});
@@ -83,6 +85,7 @@ const create: RequestHandler = async function (req, res, next) {
     const result = validationResult(req);
     if (result.isEmpty()) {
       const user = await UserModel.create(req.body)
+      await user.save();
       return res.status(201).json(user);
     } else {
       res.status(400).json(jsonMessageResponse("Validation Failed", result.array()));

@@ -4,3 +4,5 @@ function jsonMessageResponse(message: string, error?: Array<any> | string) {
     error
   }
 }
+
+export {jsonMessageResponse};

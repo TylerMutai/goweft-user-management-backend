@@ -14,10 +14,8 @@ import {validateUserGroup, validateUserObj, validateUserStatuses} from "../valid
 const router = Router();
 
 router.route('/users')
-  .post(create)
-
-  // We're using post here to allow for filtering with alot of data since 'GET' url has a maximum size limit.
-  .post(validateUserObj, getAll);
+  .post(validateUserObj, create)
+  .get(getAll);
 
 router.route('/users/:userId')
   .get(getOne)
