@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
     "module": "es6",
-    "esModuleInterop": true,
     "target": "es6",
-    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "dist/"
   },
-  "lib": ["es2015"]
+  "include": [
+    "**/*",
+    "**/**/*"
+  ]
 }
